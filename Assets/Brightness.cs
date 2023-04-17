@@ -24,6 +24,11 @@ public class Brightness : MonoBehaviour
         {
             adjustBrightness("brighter");
         }
+        if (Manager.instance.isSuperDance)
+        {
+            StartCoroutine(superDanceLighting());
+
+        }
     }
 
     private void adjustBrightness(string mode)
@@ -44,5 +49,15 @@ public class Brightness : MonoBehaviour
             colorCode += .1f;
             sr.color = new Color(colorCode, colorCode, colorCode);
         }
+    }
+
+    IEnumerator superDanceLighting()
+    {
+        sr.color = Color.black;
+        while(Manager.instance.isSuperDance)
+        {
+            yield return null;
+        }
+        sr.color = Color.white;
     }
 }

@@ -27,7 +27,8 @@ public class DiscoLight : MonoBehaviour
 
     private void randomColor()
     {
-        sr.color = Random.ColorHSV();
+        if(!Manager.instance.isSuperDance)
+            sr.color = Random.ColorHSV();
     }
 
     IEnumerator changeLighting()

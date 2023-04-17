@@ -154,8 +154,6 @@ public class NPCMovement : MonoBehaviour
     {
         int rand = Random.Range(0, danceMoves.Length);
         StartCoroutine(dance(danceMoves[rand]));     
-
-
     }
 
 }

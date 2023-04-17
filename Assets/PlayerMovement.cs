@@ -72,14 +72,13 @@ public class DanceMove
 }
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] SpriteRenderer backgroundSr;
 
     SpriteRenderer spriteRenderer;
     bool isDancing;
-    bool isSuperDance;
     DanceMove dance0;
     DanceMove dance1;
     DanceMove testDance;
+    DanceMove superDance;
 
 
 
@@ -105,6 +104,11 @@ public class PlayerMovement : MonoBehaviour
         testDance = new DanceMove(
             new string[] { "leftleftuprotrrotr", "rightrightrightuprotl", "leftdown","uprotl", "downdown", "rotr", "rotl" });
 
+        superDance = new DanceMove(new string[] { "rotr rotr rotr rotr up up", "rotl rotl rotl  down down down down ", "rotr rotr rotr rotr rotr up up ", "rotl rotl rotl rotl rotl rotl rotl rotl left rotl" },
+            new float[] { 1f, 1f, 4f, 1f },
+            new float[] { 4f, 4f, 1f, 1f }
+            );
+
     }
 
     // Update is called once per frame
@@ -126,6 +130,8 @@ public class PlayerMovement : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Keypad8) && !isDancing)
         {
             //Do the super dance
+            Manager.instance.isSuperDance = true;
+            StartCoroutine(dance(superDance));
 
         }
 
@@ -155,7 +161,8 @@ public class PlayerMovement : MonoBehaviour
                 yield return null;
             }
         }
-        isDancing = false;       
+        isDancing = false;    
+        Manager.instance.isSuperDance = false;
     }
  
 
