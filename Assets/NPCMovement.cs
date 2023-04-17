@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -12,6 +13,7 @@ public class NPCMovement : MonoBehaviour
     bool isDancing;
     DanceMove dance0;
     DanceMove dance1;
+    DanceMove testDance;
     DanceMove[] danceMoves;
 
 
@@ -34,7 +36,10 @@ public class NPCMovement : MonoBehaviour
             5f
             );
 
-        danceMoves = new DanceMove[] { dance0, dance1 };
+        testDance = new DanceMove(
+            new string[] { "leftleftuprotrrotr", "rightrightrightuprotl", "leftdown", "uprotl", "downdown", "rotr", "rotl" });
+
+        danceMoves = new DanceMove[] { dance0, dance1, testDance };
     }
 
     // Update is called once per frame
@@ -45,13 +50,9 @@ public class NPCMovement : MonoBehaviour
             float delay = Random.Range(1f, 6f);
             isDancing = true;
             Invoke(nameof(AiDance),delay);
-            Debug.Log("Invoked dance");
+            //Debug.Log("Invoked dance");
 
         }
-
-
-
-
     }
 
 
@@ -79,14 +80,16 @@ public class NPCMovement : MonoBehaviour
                 yield return null;
             }
         }
-        Debug.Log("finished dancing");
+        //Debug.Log("finished dancing");
         isDancing = false;
         
     }
 
     private void Move(string direction, float Speed = 1f)
     {
+        Vector2 rotation = Vector3.zero;
         Vector3 moveVector = Vector3.zero;
+        int rotations = 0;
 
         if (direction == "auto")
         {
@@ -95,29 +98,50 @@ public class NPCMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.A)) moveVector.x = -1;
             if (Input.GetKey(KeyCode.S)) moveVector.y = -1;
             if (Input.GetKey(KeyCode.D)) moveVector.x = 1;
-        }
-        else if (direction == "left")
-        {
-            moveVector.x = -1;
-        }
-        else if (direction == "right")
-        {
-            moveVector.x = 1;
-        }
-        else if (direction == "up")
-        {
-            moveVector.y = 1;
-        }
-        else if (direction == "down")
-        {
-            moveVector.y = -1;
-        }
 
-        // Normalize vector, so that magnitude for diagonal movement is also 1
-        moveVector.Normalize();
+            // Normalize vector, so that magnitude for diagonal movement is also 1
+            moveVector.Normalize();
+        }
+        else
+        {
+
+
+            if (direction.Contains("left"))
+            {
+
+                moveVector.x -= Regex.Matches(direction, "left").Count;
+            }
+            if (direction.Contains("right"))
+            {
+
+                moveVector.x += Regex.Matches(direction, "right").Count;
+            }
+            if (direction.Contains("up"))
+            {
+                moveVector.y += Regex.Matches(direction, "up").Count;
+            }
+            if (direction.Contains("down"))
+            {
+                moveVector.y -= Regex.Matches(direction, "down").Count;
+            }
+            if (direction.Contains("rotl"))
+            {
+                rotations += Regex.Matches(direction, "rotl").Count;
+            }
+            if (direction.Contains("rotr"))
+            {
+                rotations -= Regex.Matches(direction, "rotr").Count;
+            }
+            if (rotations != 0)
+            {
+                transform.Rotate(Vector3.forward, rotations * 90 * Time.deltaTime);
+            }
+
+        }
 
         // Frame rate independent movement
         transform.position += Time.deltaTime * moveVector * Speed;
+
         // Flip the sprite if facing to the left
         if (moveVector.x > 0)
             spriteRenderer.flipX = true;
@@ -125,13 +149,12 @@ public class NPCMovement : MonoBehaviour
             spriteRenderer.flipX = false;
     }
 
+
     public void AiDance()
     {
-        int rand = Random.Range(0, 2);
-        if(rand == 0)
-            StartCoroutine(dance(dance0));     
-        if(rand == 1)
-            StartCoroutine(dance(dance1));
+        int rand = Random.Range(0, danceMoves.Length);
+        StartCoroutine(dance(danceMoves[rand]));     
+
 
     }
 

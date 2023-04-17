@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -78,8 +79,7 @@ public class PlayerMovement : MonoBehaviour
     bool isSuperDance;
     DanceMove dance0;
     DanceMove dance1;
-    DanceMove superDance0;
-    DanceMove superDance1;
+    DanceMove testDance;
 
 
 
@@ -89,7 +89,6 @@ public class PlayerMovement : MonoBehaviour
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         isDancing = false;
-        isSuperDance = false;
 
         dance0 = new DanceMove(
             new string[] { "up", "left", "right", "down" },
@@ -103,17 +102,8 @@ public class PlayerMovement : MonoBehaviour
             5f
             );
 
-        superDance0 = new DanceMove(
-            new string[] { "up", "down", "up", "down" },
-            new float[] { 1f, 1f, 1f, 1f },
-            new float[] { 1f, 4f, 4f, 1f }
-            );
-
-        superDance1 = new DanceMove(
-            new string[] { "left", "right", "left", "right", "left", "right", "left", "right" },
-            0.375f,
-            5f
-            );
+        testDance = new DanceMove(
+            new string[] { "leftleftuprotrrotr", "rightrightrightuprotl", "leftdown","uprotl", "downdown", "rotr", "rotl" });
 
     }
 
@@ -129,16 +119,14 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Keypad0) && !isDancing)
         {
             //Throw some sick moves
-            StartCoroutine(dance(dance1));
-            StartCoroutine(dance(dance0));
+            StartCoroutine(dance(testDance));
+
 
         }
         if(Input.GetKeyDown(KeyCode.Keypad8) && !isDancing)
         {
             //Do the super dance
-            isSuperDance = true;
-            StartCoroutine(dance(superDance0));
-            StartCoroutine(dance(superDance1));
+
         }
 
         
@@ -150,12 +138,6 @@ public class PlayerMovement : MonoBehaviour
         int currentIndex = 0;
         isDancing = true;
 
-        //dimm lights if superdancing
-        if (isSuperDance)
-        {
-            backgroundSr.enabled = false;
-           
-        }
         //iterate over all moves and call move function with corresponding instruction
         if(danceMove.size >= 0)
         {
@@ -173,7 +155,6 @@ public class PlayerMovement : MonoBehaviour
                 yield return null;
             }
         }
-        isSuperDance = false;
         isDancing = false;       
     }
  
@@ -182,7 +163,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move(string direction, float Speed = 1f)
     {
+        Vector2 rotation = Vector3.zero;
         Vector3 moveVector = Vector3.zero;
+        int rotations = 0;
 
         if (direction == "auto")
         {
@@ -190,34 +173,55 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.W)) moveVector.y = 1;
             if (Input.GetKey(KeyCode.A)) moveVector.x = -1;
             if (Input.GetKey(KeyCode.S)) moveVector.y = -1;
-            if (Input.GetKey(KeyCode.D)) moveVector.x = 1; 
-        }
-        else if(direction == "left")
-        {
-            moveVector.x = -1;
-        }
-        else if(direction == "right")
-        {
-            moveVector.x = 1;
-        } 
-        else if(direction == "up")
-        {
-            moveVector.y = 1;
-        } 
-        else if(direction == "down")
-        {
-            moveVector.y = -1;
-        }
+            if (Input.GetKey(KeyCode.D)) moveVector.x = 1;
 
-        // Normalize vector, so that magnitude for diagonal movement is also 1
-        moveVector.Normalize();
+            // Normalize vector, so that magnitude for diagonal movement is also 1
+            moveVector.Normalize();
+        }
+        else
+        { 
+
+
+            if (direction.Contains("left"))
+            {
+                
+                moveVector.x -= Regex.Matches(direction, "left").Count;
+            }
+            if (direction.Contains("right"))
+            {
+
+                moveVector.x += Regex.Matches(direction, "right").Count;
+            }
+            if (direction.Contains("up")) 
+            {
+                moveVector.y += Regex.Matches(direction, "up").Count;
+            }
+            if (direction.Contains("down"))
+            {
+                moveVector.y -= Regex.Matches(direction, "down").Count;
+            }
+            if (direction.Contains("rotl"))
+            {
+                rotations += Regex.Matches(direction, "rotl").Count;
+            }
+            if (direction.Contains("rotr"))
+            {
+                rotations -= Regex.Matches(direction, "rotr").Count;
+            }
+            if (rotations != 0)
+            {
+                transform.Rotate(Vector3.forward, rotations * 90 * Time.deltaTime);
+            }
+
+        }
 
         // Frame rate independent movement
         transform.position += Time.deltaTime * moveVector * Speed;
+
         // Flip the sprite if facing to the left
         if (moveVector.x > 0)
             spriteRenderer.flipX = true;
-        else if (moveVector.x < 0)
+        else if (moveVector.x< 0)
             spriteRenderer.flipX = false;
     }
 
