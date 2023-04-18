@@ -27,17 +27,34 @@ public class DiscoLight : MonoBehaviour
 
     private void randomColor()
     {
-        sr.color = Random.ColorHSV();
+        if(!Manager.instance.isSuperDance)
+            sr.color = Random.ColorHSV();
     }
 
     IEnumerator changeLighting()
     {
         while (true)
         {
-            float t = Random.Range(1f, 5f);
-            yield return new WaitForSeconds(t);
+            while (!Manager.instance.isSquidGame)
+            {
+                float t = Random.Range(1f, 5f);
+                yield return new WaitForSeconds(t);
 
-            randomColor();
+                randomColor();
+            }
+            while (Manager.instance.isSquidGame)
+            {
+                if (Manager.instance.isRedPhaseOfSquidGame)
+                {
+                    sr.color = Color.red;
+                }
+                else
+                {
+                    sr.color = Color.green;
+                }
+                yield return null;
+            }
+            yield return null;
         }
 
     }
