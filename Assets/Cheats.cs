@@ -56,13 +56,10 @@ public class Cheat
                 // check if cheatcode is complete
                 if (index == sequence.Length)
                 {
-
                        // reset index and run cheat code
                         index = 0;
                         this.RunMethod();
                         return true;
-                 
-
                 }
             }
 
@@ -70,6 +67,8 @@ public class Cheat
             else
             {
                 index = 0;
+                if (inputKey == sequence[index])
+                    index++;
                 return false;
             }
         }

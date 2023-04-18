@@ -19,11 +19,11 @@ public class Brightness : MonoBehaviour
     void Update()
     {
         // adjust brightness with O and P
-        if (Input.GetKeyDown(KeyCode.O))
+        if (Input.GetKey(KeyCode.O))
         {
             adjustBrightness("darker");
         } 
-        else if (Input.GetKeyDown(KeyCode.P))
+        else if (Input.GetKey(KeyCode.P))
         {
             adjustBrightness("brighter");
         }
@@ -56,21 +56,27 @@ public class Brightness : MonoBehaviour
 
     private void adjustBrightness(string mode)
     {
-        float colorCode = sr.color.r;
-        Debug.Log(colorCode);
+        float r = sr.color.r;
+        float g = sr.color.g;
+        float b = sr.color.b;
+        Debug.Log(b);
 
         if(mode == "darker")
         {
-            if (colorCode <= .1f) return;
-            colorCode -= .1f;
-            sr.color = new Color(colorCode, colorCode, colorCode);
+            if (b <= .001f) return;
+            r -= .001f;
+            g -= .001f;
+            b -= .001f;
+            sr.color = new Color(r, g, b);
 
         } 
         else if(mode == "brighter")
         {
-            if(colorCode >= 1) return;
-            colorCode += .1f;
-            sr.color = new Color(colorCode, colorCode, colorCode);
+            if(b >= 1) return;
+            r += .001f;
+            g += .001f;
+            b += .001f;
+            sr.color = new Color(r, g, b);
         }
     }
 

@@ -5,16 +5,18 @@ using UnityEngine;
 
 public class Manager : MonoBehaviour
 {
-    [SerializeField] public GameObject[] npcArr;
+
     [SerializeField] public float playerSpeed = 3f;
     [SerializeField] public TextMeshProUGUI textMesh;
     [SerializeField] private List<GameObject> discoLights;
+    [SerializeField] private GameObject npcParent;
 
     public bool isSquidGame;
     public bool isRedPhaseOfSquidGame;
     public bool isSuperDance;
     public static Manager instance;
     List<string> strings;
+    public GameObject[] npcArr;
     string text;
 
     public List<Sprite> defaultNpcSprites;
@@ -32,6 +34,14 @@ public class Manager : MonoBehaviour
         instance.isSuperDance = false;
         instance.isRedPhaseOfSquidGame = false;
         strings = new List<string>();
+        npcArr = new GameObject[npcParent.transform.childCount];
+
+        int i = 0;
+        foreach(Transform child in npcParent.transform)
+        {
+            npcArr[i] = child.gameObject;
+            i++;
+        }
         foreach ( GameObject npc in npcArr)
         {
             if (npc != null)

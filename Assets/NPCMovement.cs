@@ -14,7 +14,9 @@ public class NPCMovement : MonoBehaviour
     bool decidedAgainstDancingDuringRedPhase;
     DanceMove dance0;
     DanceMove dance1;
+    DanceMove dance2;
     DanceMove testDance;
+    DanceMove testDance2;
     DanceMove[] danceMoves;
 
 
@@ -29,19 +31,27 @@ public class NPCMovement : MonoBehaviour
         dance0 = new DanceMove(
             new string[] { "up", "left", "right", "down" },
             new float[] { 1f, 1f, 1f, 1f },
-            new float[] { 1f, 4f, 4f, 1f }
+            new float[] { 2f, 2f, 2f, 2f }
             );
 
         dance1 = new DanceMove(
             new string[] { "left", "right", "left", "right", "left", "right", "left", "right" },
             0.2f,
-            5f
+            3f
+            );
+
+        dance2 = new DanceMove(
+            new string[] { "uprotl", "downrotr", "uprotl", "downrotr", "uprotl", "downrotr", "uprotl", "downrotr" },
+            0.2f,
+            3f
             );
 
         testDance = new DanceMove(
-            new string[] { "leftleftuprotrrotr", "rightrightrightuprotl", "leftdown", "uprotl", "downdown", "rotr", "rotl" });
+            new string[] { "rotr", "rotr", "rotr", "rotr" });
+        testDance2 = new DanceMove(
+            new string[] { "rotr", "rotr", "rotr", "rotr" });
 
-        danceMoves = new DanceMove[] { dance0, dance1, testDance };
+        danceMoves = new DanceMove[] { dance0, dance1, dance2, testDance, testDance2 };
     }
 
     // Update is called once per frame
@@ -51,7 +61,7 @@ public class NPCMovement : MonoBehaviour
         {
             int chanceToDance = 100;
             if (Manager.instance.isRedPhaseOfSquidGame && Manager.instance.isSquidGame)
-                chanceToDance = 20;
+                chanceToDance = 10;
             int rand = Random.Range(1, 101);
 
             // only dance if rand is smaller than the chance to dance   which is 100% is there is no red light
