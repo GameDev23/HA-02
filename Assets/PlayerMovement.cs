@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.SceneManagement;
 
 public class DanceMove
 {
@@ -182,13 +183,19 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.S)) moveVector.y = -1;
             if (Input.GetKey(KeyCode.D)) moveVector.x = 1;
 
+            // reload scene if player moves during squidgame
+            if(moveVector != Vector3.zero && Manager.instance.isSquidGame)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+
             // Normalize vector, so that magnitude for diagonal movement is also 1
             moveVector.Normalize();
         }
         else
         { 
 
-
+            // parse string to vector
             if (direction.Contains("left"))
             {
                 
@@ -223,7 +230,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Frame rate independent movement
-        transform.position += Time.deltaTime * moveVector * Speed;
+        transform.position += Time.deltaTime * moveVector * Speed * Manager.instance.playerSpeed;
 
         // Flip the sprite if facing to the left
         if (moveVector.x > 0)

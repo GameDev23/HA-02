@@ -11,6 +11,7 @@ public class NPCMovement : MonoBehaviour
 {
     SpriteRenderer spriteRenderer;
     bool isDancing;
+    bool decidedAgainstDancingDuringRedPhase;
     DanceMove dance0;
     DanceMove dance1;
     DanceMove testDance;
@@ -23,6 +24,7 @@ public class NPCMovement : MonoBehaviour
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         isDancing = false;
+        decidedAgainstDancingDuringRedPhase = false;
 
         dance0 = new DanceMove(
             new string[] { "up", "left", "right", "down" },
@@ -45,14 +47,29 @@ public class NPCMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!isDancing)
+        if(!isDancing && !decidedAgainstDancingDuringRedPhase)
         {
-            float delay = Random.Range(1f, 6f);
-            isDancing = true;
-            Invoke(nameof(AiDance),delay);
-            //Debug.Log("Invoked dance");
+            int chanceToDance = 100;
+            if (Manager.instance.isRedPhaseOfSquidGame && Manager.instance.isSquidGame)
+                chanceToDance = 20;
+            int rand = Random.Range(1, 101);
+
+            // only dance if rand is smaller than the chance to dance   which is 100% is there is no red light
+            if (rand < chanceToDance)
+            {
+
+                isDancing = true;
+                float delay = Random.Range(0f, 3f);
+                Invoke(nameof(AiDance), delay);
+            }
+            else
+            {
+                decidedAgainstDancingDuringRedPhase = true;
+            }
 
         }
+        else if (!Manager.instance.isRedPhaseOfSquidGame)
+            decidedAgainstDancingDuringRedPhase = false;
     }
 
 
@@ -61,7 +78,6 @@ public class NPCMovement : MonoBehaviour
         //keep track of nr of dancemoves and the duration per move
         float elapsedTime = 0f;
         int currentIndex = 0;
-        isDancing = true;
 
         //iterate over all moves and call move function with corresponding instruction
         if (danceMove.size >= 0)
@@ -80,8 +96,8 @@ public class NPCMovement : MonoBehaviour
                 yield return null;
             }
         }
-        //Debug.Log("finished dancing");
         isDancing = false;
+        yield return null;
         
     }
 
@@ -152,8 +168,19 @@ public class NPCMovement : MonoBehaviour
 
     public void AiDance()
     {
+        // if it is squidgame and the npc starts to dance   destroy it
+        if (Manager.instance.isSquidGame && Manager.instance.isRedPhaseOfSquidGame)
+            Invoke(nameof(destroyGameObject), 1f);
         int rand = Random.Range(0, danceMoves.Length);
-        StartCoroutine(dance(danceMoves[rand]));     
+        StartCoroutine(dance(danceMoves[rand]));   
+    }
+
+    void destroyGameObject()
+    {
+        string name = this.name;
+        AudioManager.instance.playExplosion(gameObject.transform.position);
+        Manager.instance.displayMessage(name + " vanished");
+        Destroy(gameObject);
     }
 
 }

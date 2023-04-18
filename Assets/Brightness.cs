@@ -7,15 +7,18 @@ using UnityEngine;
 public class Brightness : MonoBehaviour
 {
     SpriteRenderer sr;
+    bool isSquidGameInvoked;
     // Start is called before the first frame update
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
+        isSquidGameInvoked = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // adjust brightness with O and P
         if (Input.GetKeyDown(KeyCode.O))
         {
             adjustBrightness("darker");
@@ -29,6 +32,26 @@ public class Brightness : MonoBehaviour
             StartCoroutine(superDanceLighting());
 
         }
+        //////////////////////////////
+
+        // start change lightings for squidgame if squidgame is active   otherwise disable invoke
+        if (Manager.instance.isSquidGame && !isSquidGameInvoked)
+        {
+            // switch background to green and red
+            isSquidGameInvoked = true;
+            InvokeRepeating(nameof(greenLightRedLight), 2f, 5f);
+
+
+
+
+        }
+        else if(!Manager.instance.isSquidGame && isSquidGameInvoked)
+        {
+            isSquidGameInvoked = false;
+            CancelInvoke();
+            sr.color = Color.white;
+        }
+
     }
 
     private void adjustBrightness(string mode)
@@ -59,5 +82,22 @@ public class Brightness : MonoBehaviour
             yield return null;
         }
         sr.color = Color.white;
+    }
+
+    void greenLightRedLight()
+    {
+        Debug.Log("Change lighting squid");
+        if (sr.color == Color.green)
+        {
+            sr.color = Color.red;
+            Manager.instance.isRedPhaseOfSquidGame = true;
+        }
+        else 
+        {
+            sr.color = Color.green;
+            Manager.instance.isRedPhaseOfSquidGame = false;
+        }
+
+
     }
 }
