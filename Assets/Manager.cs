@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ public class Manager : MonoBehaviour
     public bool isSuperDance;
     public static Manager instance;
     List<string> strings;
-    public GameObject[] npcArr;
+    public List<GameObject> npcArr;
     string text;
 
     public List<Sprite> defaultNpcSprites;
@@ -34,7 +35,7 @@ public class Manager : MonoBehaviour
         instance.isSuperDance = false;
         instance.isRedPhaseOfSquidGame = false;
         strings = new List<string>();
-        npcArr = new GameObject[npcParent.transform.childCount];
+        npcArr = new GameObject[npcParent.transform.childCount].ToList<GameObject>();
 
         int i = 0;
         foreach(Transform child in npcParent.transform)
@@ -56,7 +57,7 @@ public class Manager : MonoBehaviour
         strings.Add("W, A, S, D to move");
         strings.Add("Adjust brightness with \"O\" and \"P\"");
         strings.Add("Spawn Discolight with \"F\"");
-        strings.Add("Cheatcodes are:\n- \"DOGE\"\n- \"NINJA\"\n- \"SQUIDGAME\"\n- \"BOOM\"");
+        strings.Add("Cheatcodes are:\n- \"DOGE\"\n- \"NINJA\"\n- \"SQUIDGAME\"\n- \"BOOM\"\n- \"PEW\"");
         strings.Add("\n_______________________\n");
 
         foreach(string str in strings)
@@ -69,7 +70,7 @@ public class Manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void adjustPlayerSpeed(float modificator)

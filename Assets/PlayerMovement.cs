@@ -73,7 +73,6 @@ public class DanceMove
 }
 public class PlayerMovement : MonoBehaviour
 {
-
     SpriteRenderer spriteRenderer;
     bool isDancing;
     DanceMove dance0;
@@ -135,6 +134,7 @@ public class PlayerMovement : MonoBehaviour
             StartCoroutine(dance(superDance));
 
         }
+        
 
         
     }
