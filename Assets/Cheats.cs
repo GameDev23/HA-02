@@ -84,12 +84,13 @@ public class Cheats : MonoBehaviour
     [SerializeField] Sprite projectileSprite;
     [SerializeField] AudioClip laserSound;
 
-    List<Cheat> cheats;
+    public List<Cheat> cheats;
     Cheat cheat0;
     Cheat cheat1;
     Cheat cheat2;
     Cheat cheat3;
     Cheat cheat4;
+    Cheat cheat5;
 
     private void Awake()
     {
@@ -106,6 +107,7 @@ public class Cheats : MonoBehaviour
         cheat2 = new Cheat("squidgame", squidGameCheat);
         cheat3 = new Cheat("boom", explosionCheat);
         cheat4 = new Cheat("pew", laserCheat);
+        cheat5 = new Cheat("exmatrikulus", superLaserCheat);
      
 
 
@@ -114,6 +116,7 @@ public class Cheats : MonoBehaviour
         cheats.Add(cheat2);
         cheats.Add(cheat3);
         cheats.Add(cheat4);
+        cheats.Add(cheat5);
         //done with cheats initialization
     }
 
@@ -204,7 +207,17 @@ public class Cheats : MonoBehaviour
 
     public int laserCheat(bool isActive)
     {
+
         StartCoroutine(laser());
+        return 1;
+    }
+
+    public int superLaserCheat(bool isActive)
+    {
+        for (int i = 0; i < Manager.instance.npcArr.Count; i++)
+        {
+            StartCoroutine(laser(i));
+        }
         return 1;
     }
     IEnumerator explosions()
@@ -223,12 +236,14 @@ public class Cheats : MonoBehaviour
         }
     }
 
-    IEnumerator laser()
+    IEnumerator laser(int Index = -1)
     {
 
         if (Manager.instance.npcArr.Count > 0)
         {
-            int rand = Random.Range(0, Manager.instance.npcArr.Count);
+            int rand = Index;
+            if (Index == -1)
+                rand = Random.Range(0, Manager.instance.npcArr.Count);
             GameObject target = Manager.instance.npcArr[rand];
 
             // get start position
