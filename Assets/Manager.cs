@@ -54,6 +54,8 @@ public class Manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        strings.Add("!!Sound on!!");
+        strings.Add("");
         strings.Add("W, A, S, D to move");
         strings.Add("Adjust brightness with \"O\" and \"P\"");
         strings.Add("Spawn Discolight with \"F\"");
