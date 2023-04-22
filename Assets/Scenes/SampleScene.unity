@@ -3045,7 +3045,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d18867484052a1348b1dd7a3e1be4576, type: 3}
   - {fileID: 21300000, guid: 5e55ad2b44367f648bc0fc3a5a1962c7, type: 3}
   cam: {fileID: 519420031}
-  projectileSprite: {fileID: -1413350594, guid: 58a75a626e0995d42aebc25824a4948e, type: 3}
+  projectileSprite: {fileID: 1411440168, guid: 58a75a626e0995d42aebc25824a4948e, type: 3}
   laserSound: {fileID: 8300000, guid: 0f117089d5722314db29c84a028a3efb, type: 3}
 --- !u!4 &2004885459
 Transform:
