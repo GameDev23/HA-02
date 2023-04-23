@@ -79,7 +79,17 @@ public class PlayerMovement : MonoBehaviour
     DanceMove dance1;
     DanceMove testDance;
     DanceMove superDance;
+    public static PlayerMovement instance;
+    DanceMove zoomMove;
 
+    private void Awake()
+    {
+        //create singleton
+        if (instance == null)
+            instance = this;
+        else if (instance != this)
+            Destroy(gameObject);
+    }
 
 
     // Start is called before the first frame update
@@ -108,6 +118,8 @@ public class PlayerMovement : MonoBehaviour
             new float[] { 1f, 1f, 4f, 1f },
             new float[] { 4f, 4f, 1f, 1f }
             );
+
+        zoomMove = new DanceMove(new string[] {"leftrotrleftrotrleftrotr ",  "rightrotlrightrotlrightrotl"}, new float[] { 1f, 1f }, new float[] { 10f, 10f});
 
     }
 
@@ -239,7 +251,10 @@ public class PlayerMovement : MonoBehaviour
             spriteRenderer.flipX = false;
     }
 
-
+    public int Zoom() {
+        StartCoroutine(dance(zoomMove));
+        return 1;
+    }
     
 }
 

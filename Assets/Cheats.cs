@@ -83,6 +83,8 @@ public class Cheats : MonoBehaviour
     [SerializeField] Camera cam;
     [SerializeField] Sprite projectileSprite;
     [SerializeField] AudioClip laserSound;
+    [SerializeField] GameObject playerObject;
+
 
     public List<Cheat> cheats;
     Cheat cheat0;
@@ -91,6 +93,7 @@ public class Cheats : MonoBehaviour
     Cheat cheat3;
     Cheat cheat4;
     Cheat cheat5;
+    Cheat cheat6;
 
     private void Awake()
     {
@@ -108,7 +111,7 @@ public class Cheats : MonoBehaviour
         cheat3 = new Cheat("boom", explosionCheat);
         cheat4 = new Cheat("pew", laserCheat);
         cheat5 = new Cheat("exmatrikulus", superLaserCheat);
-     
+        cheat6 = new Cheat("zoom", zoomCheat);
 
 
         cheats.Add(cheat0);
@@ -117,6 +120,7 @@ public class Cheats : MonoBehaviour
         cheats.Add(cheat3);
         cheats.Add(cheat4);
         cheats.Add(cheat5);
+        cheats.Add(cheat6);
         //done with cheats initialization
     }
 
@@ -212,6 +216,8 @@ public class Cheats : MonoBehaviour
         return 1;
     }
 
+
+    #region SuperLaserCheat
     public int superLaserCheat(bool isActive)
     {
         for (int i = 0; i < Manager.instance.npcArr.Count; i++)
@@ -220,6 +226,18 @@ public class Cheats : MonoBehaviour
         }
         return 1;
     }
+    #endregion
+
+
+    #region ZoomCheat
+    public int zoomCheat(bool isActive) {
+
+        PlayerMovement.instance.Zoom();
+
+        return 1;
+    }
+    #endregion
+
     IEnumerator explosions()
     {
         int n = 10;
