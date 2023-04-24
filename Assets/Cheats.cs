@@ -130,15 +130,22 @@ public class Cheats : MonoBehaviour
     {
         if (Input.anyKeyDown)
         {
-            char currentKey = Input.inputString.ToLower().ToCharArray()[0];
-            foreach (Cheat cheat in cheats)
+            if (!(Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)))
             {
-                cheat.checkInputKey(currentKey);
+                char[] arr = Input.inputString.ToLower().ToCharArray();
+                if (arr != null && arr.Length > 0)
+                {
+                    char currentKey = arr[0];
+                    foreach (Cheat cheat in cheats)
+                    {
+                        cheat.checkInputKey(currentKey);
+                    }
+                }
             }
         }
 
-        
-        
+
+
     }
 
     public int ninjaCheat(bool isActive)
@@ -237,6 +244,7 @@ public class Cheats : MonoBehaviour
         return 1;
     }
     #endregion
+
 
     IEnumerator explosions()
     {

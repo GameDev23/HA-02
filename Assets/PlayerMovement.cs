@@ -81,6 +81,7 @@ public class PlayerMovement : MonoBehaviour
     DanceMove superDance;
     public static PlayerMovement instance;
     DanceMove zoomMove;
+    DanceMove zigzag;
 
     private void Awake()
     {
@@ -121,6 +122,10 @@ public class PlayerMovement : MonoBehaviour
 
         zoomMove = new DanceMove(new string[] {"leftrotrleftrotrleftrotr ",  "rightrotlrightrotlrightrotl"}, new float[] { 1f, 1f }, new float[] { 10f, 10f});
 
+        zigzag = new DanceMove(new string[] {"leftupleftupleftupleftupleftup", "leftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdown",
+            "leftupleftupleftupleftupleftupleftupleftupleftupleftupleftup", "leftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdown",
+        "rightdownrightdownrightdownrightdownrightdown", "rightuprightuprightuprightuprightup", "rightdownrightdownrightdownrightdownrightdown", "rightuprightuprightuprightuprightuprightuprightuprightuprightuprightup"});
+
     }
 
     // Update is called once per frame
@@ -146,9 +151,22 @@ public class PlayerMovement : MonoBehaviour
             StartCoroutine(dance(superDance));
 
         }
-        
 
-        
+        if (Input.GetKeyDown(KeyCode.Keypad7) && !isDancing)
+        {
+            //Do the zigzag dance
+            StartCoroutine(dance(zigzag));
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad6) && !isDancing)
+        {
+            //Do the zigzag dance
+            Spin();
+
+        }
+
+
     }
     IEnumerator dance(DanceMove danceMove)
     {
@@ -249,6 +267,31 @@ public class PlayerMovement : MonoBehaviour
             spriteRenderer.flipX = true;
         else if (moveVector.x< 0)
             spriteRenderer.flipX = false;
+    }
+
+    public int Spin()
+    {
+
+        //Getting the current position
+        Vector3 pos = transform.position;
+
+        //Manipulating the new position
+        StartCoroutine(spinRoutine(pos));
+        return 1;
+    }
+
+    IEnumerator spinRoutine(Vector3 pos)
+    {
+        float n = 10.0f;
+
+        for (float t = 0.0f; t <= 1.0; t += 1.0f / (360.0f * n))
+        {
+            pos.x += 100.0f * Mathf.Sin((float)(t * 2 * Mathf.PI * n));
+            pos.y += 100.0f * Mathf.Cos((float)(t * 2 * Mathf.PI * n));
+            transform.position = pos * Time.deltaTime;
+            yield return null;
+            n++;
+        }
     }
 
     public int Zoom() {
