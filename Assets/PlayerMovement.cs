@@ -282,16 +282,18 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator spinRoutine(Vector3 pos)
     {
-        float n = 10.0f;
+        float circleSpeed = 1.0f;
+        float circleSize = 1.0f;
+        float circleGrowSpeed = 0.1f;
+        
+        pos.x += Mathf.Sin((float) Time.time * circleSpeed) * circleSize;
+        pos.y += Mathf.Cos((float) Time.time * circleSpeed) * circleSize;
+        
+        circleSize += circleGrowSpeed;
 
-        for (float t = 0.0f; t <= 1.0; t += 1.0f / (360.0f * n))
-        {
-            pos.x += 100.0f * Mathf.Sin((float)(t * 2 * Mathf.PI * n));
-            pos.y += 100.0f * Mathf.Cos((float)(t * 2 * Mathf.PI * n));
-            transform.position = pos * Time.deltaTime;
-            yield return null;
-            n++;
-        }
+        transform.position += pos * Time.deltaTime;
+        yield return null;
+      
     }
 
     public int Zoom() {
