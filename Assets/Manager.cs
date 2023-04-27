@@ -59,7 +59,7 @@ public class Manager : MonoBehaviour
         strings.Add("W, A, S, D to move");
         strings.Add("Adjust brightness with \"O\" and \"P\"");
         strings.Add("Spawn Discolight with \"F\"");
-        strings.Add("Cheatcodes are:\n- \"DOGE\"\n- \"NINJA\"\n- \"SQUIDGAME\"\n- \"BOOM\"\n- \"PEW\"\n- \"EXMATRIKULUS\n");
+        strings.Add("Cheatcodes are:\n- \"DOGE\"\n- \"NINJA\"\n- \"SQUIDGAME\"\n- \"ZOOM\"\n- \"BOOM\"\n- \"PEW\"\n- \"EXMATRIKULUS\n");
         strings.Add("\n_______________________\n");
 
         foreach(string str in strings)
