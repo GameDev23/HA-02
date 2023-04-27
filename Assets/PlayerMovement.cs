@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.SceneManagement;
 
 public class DanceMove
 {
@@ -72,15 +73,24 @@ public class DanceMove
 }
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] SpriteRenderer backgroundSr;
-
     SpriteRenderer spriteRenderer;
     bool isDancing;
-    bool isSuperDance;
     DanceMove dance0;
     DanceMove dance1;
     DanceMove testDance;
+    DanceMove superDance;
+    public static PlayerMovement instance;
+    DanceMove zoomMove;
+    DanceMove zigzag;
 
+    private void Awake()
+    {
+        //create singleton
+        if (instance == null)
+            instance = this;
+        else if (instance != this)
+            Destroy(gameObject);
+    }
 
 
     // Start is called before the first frame update
@@ -105,6 +115,17 @@ public class PlayerMovement : MonoBehaviour
         testDance = new DanceMove(
             new string[] { "leftleftuprotrrotr", "rightrightrightuprotl", "leftdown","uprotl", "downdown", "rotr", "rotl" });
 
+        superDance = new DanceMove(new string[] { "rotr rotr rotr rotr up up", "rotl rotl rotl  down down down down ", "rotr rotr rotr rotr rotr up up ", "rotl rotl rotl rotl rotl rotl rotl rotl left rotl" },
+            new float[] { 1f, 1f, 4f, 1f },
+            new float[] { 4f, 4f, 1f, 1f }
+            );
+
+        zoomMove = new DanceMove(new string[] {"leftrotrleftrotrleftrotr ",  "rightrotlrightrotlrightrotl"}, new float[] { 1f, 1f }, new float[] { 10f, 10f});
+
+        zigzag = new DanceMove(new string[] {"leftupleftupleftupleftupleftup", "leftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdown",
+            "leftupleftupleftupleftupleftupleftupleftupleftupleftupleftup", "leftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdown",
+        "rightdownrightdownrightdownrightdownrightdown", "rightuprightuprightuprightuprightup", "rightdownrightdownrightdownrightdownrightdown", "rightuprightuprightuprightuprightuprightuprightuprightuprightuprightup"});
+
     }
 
     // Update is called once per frame
@@ -126,10 +147,26 @@ public class PlayerMovement : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Keypad8) && !isDancing)
         {
             //Do the super dance
+            Manager.instance.isSuperDance = true;
+            StartCoroutine(dance(superDance));
 
         }
 
-        
+        if (Input.GetKeyDown(KeyCode.Keypad7) && !isDancing)
+        {
+            //Do the zigzag dance
+            StartCoroutine(dance(zigzag));
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad6) && !isDancing)
+        {
+            //Do the zigzag dance
+            Spin();
+
+        }
+
+
     }
     IEnumerator dance(DanceMove danceMove)
     {
@@ -155,7 +192,8 @@ public class PlayerMovement : MonoBehaviour
                 yield return null;
             }
         }
-        isDancing = false;       
+        isDancing = false;    
+        Manager.instance.isSuperDance = false;
     }
  
 
@@ -175,13 +213,19 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.S)) moveVector.y = -1;
             if (Input.GetKey(KeyCode.D)) moveVector.x = 1;
 
+            // reload scene if player moves during squidgame
+            if(moveVector != Vector3.zero && Manager.instance.isSquidGame)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+
             // Normalize vector, so that magnitude for diagonal movement is also 1
             moveVector.Normalize();
         }
         else
         { 
 
-
+            // parse string to vector
             if (direction.Contains("left"))
             {
                 
@@ -216,7 +260,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Frame rate independent movement
-        transform.position += Time.deltaTime * moveVector * Speed;
+        transform.position += Time.deltaTime * moveVector * Speed * Manager.instance.playerSpeed;
 
         // Flip the sprite if facing to the left
         if (moveVector.x > 0)
@@ -225,7 +269,37 @@ public class PlayerMovement : MonoBehaviour
             spriteRenderer.flipX = false;
     }
 
+    public int Spin()
+    {
 
+        //Getting the current position
+        Vector3 pos = transform.position;
+
+        //Manipulating the new position
+        StartCoroutine(spinRoutine(pos));
+        return 1;
+    }
+
+    IEnumerator spinRoutine(Vector3 pos)
+    {
+        float circleSpeed = 1.0f;
+        float circleSize = 1.0f;
+        float circleGrowSpeed = 0.1f;
+        
+        pos.x += Mathf.Sin((float) Time.time * circleSpeed) * circleSize;
+        pos.y += Mathf.Cos((float) Time.time * circleSpeed) * circleSize;
+        
+        circleSize += circleGrowSpeed;
+
+        transform.position += pos * Time.deltaTime;
+        yield return null;
+      
+    }
+
+    public int Zoom() {
+        StartCoroutine(dance(zoomMove));
+        return 1;
+    }
     
 }
 
