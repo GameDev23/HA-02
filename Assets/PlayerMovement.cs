@@ -82,6 +82,9 @@ public class PlayerMovement : MonoBehaviour
     public static PlayerMovement instance;
     DanceMove zoomMove;
     DanceMove zigzag;
+    public bool isSpinning;
+    float timeElapsed;
+
 
     private void Awake()
     {
@@ -282,15 +285,27 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator spinRoutine(Vector3 pos)
     {
+        isSpinning = true;
         float n = 10.0f;
 
         for (float t = 0.0f; t <= 1.0; t += 1.0f / (360.0f * n))
         {
-            pos.x += 100.0f * Mathf.Sin((float)(t * 2 * Mathf.PI * n));
-            pos.y += 100.0f * Mathf.Cos((float)(t * 2 * Mathf.PI * n));
-            transform.position = pos * Time.deltaTime;
-            yield return null;
-            n++;
+            if (isSpinning)
+            {
+                timeElapsed += Time.deltaTime; //Time delta time is the past time from the past frame update
+                if (timeElapsed >= 5.0f)
+                {
+                    //giving the null vector as placeholder
+                    isSpinning = false;
+                    break;
+                }
+
+                pos.x += 100.0f * Mathf.Sin((float)(t * 2 * Mathf.PI * n));
+                pos.y += 100.0f * Mathf.Cos((float)(t * 2 * Mathf.PI * n));
+                transform.position = pos * Time.deltaTime * 0.1f;
+                yield return null; //waits for the next frame 
+                n++;
+            }
         }
     }
 
