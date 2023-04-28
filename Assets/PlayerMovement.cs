@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -82,6 +83,9 @@ public class PlayerMovement : MonoBehaviour
     public static PlayerMovement instance;
     DanceMove zoomMove;
     DanceMove zigzag;
+    public bool isSpinning;
+    float timeElapsed;
+
 
     private void Awake()
     {
@@ -282,18 +286,42 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator spinRoutine(Vector3 pos)
     {
-        float circleSpeed = 1.0f;
-        float circleSize = 1.0f;
-        float circleGrowSpeed = 0.1f;
-        
-        pos.x += Mathf.Sin((float) Time.time * circleSpeed) * circleSize;
-        pos.y += Mathf.Cos((float) Time.time * circleSpeed) * circleSize;
-        
-        circleSize += circleGrowSpeed;
+        isSpinning = true;
+        float n = 100.0f;
+        Quaternion orientation = transform.rotation;
+        Manager.instance.isSuperDance = true;
 
-        transform.position += pos * Time.deltaTime;
-        yield return null;
-      
+        var startPosition = pos;
+
+        for (float t = 0.0f; t <= 1.0; t += 1.0f / (360.0f * 100f))
+        {
+            if (isSpinning)
+            {
+                timeElapsed += Time.deltaTime; //Time delta time is the past time from the past frame update
+                if (timeElapsed >= 20.0f)
+                {
+                    //giving the null vector as placeholder
+                    isSpinning = false;
+                    timeElapsed = 0.0f;
+                    break;
+                }
+                pos = transform.position;
+                pos.x += 1000000.0f * Mathf.Sin((float)(t * 2 * Mathf.PI * n));
+                pos.y += 1000000.0f * Mathf.Cos((float)(t * 2 * Mathf.PI * n));
+                transform.position = pos * Time.deltaTime * 0.001f;
+                transform.Rotate(Vector3.back, 150.0f * Time.deltaTime);
+                yield return null; //waits for the next frame 
+            }
+        }
+
+        transform.rotation = orientation;
+
+        while (Vector3.Distance(transform.position, startPosition) > 0.1f) {
+                transform.position = Vector3.MoveTowards(transform.position, startPosition, Time.deltaTime);
+            yield return null;
+        }
+        Manager.instance.isSuperDance = false;
+
     }
 
     public int Zoom() {
