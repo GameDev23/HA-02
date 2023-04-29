@@ -1,4 +1,3 @@
-using Mono.Cecil;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -82,8 +81,9 @@ public class Cheats : MonoBehaviour
     [SerializeField] Sprite[] explosionsArr;
     [SerializeField] Camera cam;
     [SerializeField] Sprite projectileSprite;
-    [SerializeField] AudioClip laserSound;
+    [SerializeField] AudioClip[] laserSound;
     [SerializeField] GameObject playerObject;
+    [SerializeField] GameObject chicken;
 
 
     public List<Cheat> cheats;
@@ -94,6 +94,8 @@ public class Cheats : MonoBehaviour
     Cheat cheat4;
     Cheat cheat5;
     Cheat cheat6;
+    Cheat cheat7;
+
 
     private void Awake()
     {
@@ -112,6 +114,8 @@ public class Cheats : MonoBehaviour
         cheat4 = new Cheat("pew", laserCheat);
         cheat5 = new Cheat("exmatrikulus", superLaserCheat);
         cheat6 = new Cheat("zoom", zoomCheat);
+        cheat7 = new Cheat("sahne",sahne);
+     
 
 
         cheats.Add(cheat0);
@@ -121,6 +125,7 @@ public class Cheats : MonoBehaviour
         cheats.Add(cheat4);
         cheats.Add(cheat5);
         cheats.Add(cheat6);
+        cheats.Add(cheat7);
         //done with cheats initialization
     }
 
@@ -209,6 +214,15 @@ public class Cheats : MonoBehaviour
         }
     }
 
+
+    public int sahne(bool isActive)
+    {
+        Manager.instance.displayMessage("Bosshafte Weihnachten!");
+        StartCoroutine(SahneCheatcode());
+        return 1;
+
+    }
+
     public int explosionCheat(bool isActive)
     {
         Manager.instance.displayMessage("BOOOM");
@@ -281,7 +295,9 @@ public class Cheats : MonoBehaviour
             SpriteRenderer projectileSr = projectile.AddComponent<SpriteRenderer>();
             projectileSr.sortingOrder = 100;
             AudioSource projectileAudio = projectile.AddComponent<AudioSource>();
-            projectileAudio.clip = laserSound;
+
+            rand = Random.Range(0, laserSound.Length);
+            projectileAudio.clip = laserSound[rand];
             projectileAudio.Play();
 
 
@@ -325,5 +341,32 @@ public class Cheats : MonoBehaviour
 
 
     }
+
+
+    IEnumerator SahneCheatcode()
+    {
+        List<GameObject> ChickenBucket = new List<GameObject>();
+
+        for(int i = 0 ; i < 200;i++)
+        {
+            float x = Random.Range(0.0f, 1.0f);
+            float y = Random.Range(0.8f, 1.0f);  
+            Vector2 pos = cam.ViewportToWorldPoint(new Vector2(x, y));
+            GameObject chickenInstance = Instantiate(chicken.gameObject,  pos, Quaternion.identity);
+            chickenInstance.transform.position = pos;
+            chickenInstance.transform.rotation = UnityEngine.Random.rotation;
+            ChickenBucket.Add(chickenInstance);
+
+            yield return new WaitForSeconds(0.02f);
+        }
+
+        yield return new WaitForSeconds(3f);
+        foreach(GameObject Elem in ChickenBucket)
+        {
+            Destroy(Elem);
+        }
+
+    }
+
 
 }

@@ -51,7 +51,7 @@ public class NPCMovement : MonoBehaviour
         testDance2 = new DanceMove(
             new string[] { "rotr", "rotr", "rotr", "rotr" });
 
-        danceMoves = new DanceMove[] { dance0, dance1, dance2, testDance, testDance2 };
+        danceMoves = new DanceMove[] { dance0, dance1, dance2, testDance, testDance2};
     }
 
     // Update is called once per frame

@@ -74,6 +74,7 @@ public class DanceMove
 }
 public class PlayerMovement : MonoBehaviour
 {
+
     SpriteRenderer spriteRenderer;
     bool isDancing;
     DanceMove dance0;
@@ -85,6 +86,8 @@ public class PlayerMovement : MonoBehaviour
     DanceMove zigzag;
     public bool isSpinning;
     float timeElapsed;
+    DanceMove MarvinsDance;
+    DanceMove MarvinsSaftigerMayoLastigerAntioxWaterMove;
 
 
     private void Awake()
@@ -131,6 +134,17 @@ public class PlayerMovement : MonoBehaviour
             "rightuprightuprightuprightuprightuprightuprightuprightuprightuprightup", "rightdownrightdownrightdownrightdownrightdownrightdownrightdownrightdownrightdownrightdown",
             "rightuprightuprightuprightuprightup" });
 
+        MarvinsDance = new DanceMove(
+            new string[] {"left", "left", "right", "right","up", "up", "down", "down" },
+            2.0f,
+            5.0f
+            );
+
+        MarvinsSaftigerMayoLastigerAntioxWaterMove = new DanceMove(new string[] { "rotl rotl ", "up down up up down ", "rotr rotl up down up up up up ", "down down rotl rotr down down down up down rotl rotl" },
+            new float[] { 3f, 3f, 3f, 3f },
+            new float[] { 2f, 2f, 3f, 2.8f }
+            );
+
     }
 
     // Update is called once per frame
@@ -142,34 +156,63 @@ public class PlayerMovement : MonoBehaviour
             Move("auto");
         }
 
-        if (Input.GetKeyDown(KeyCode.Keypad0) && !isDancing)
+        if (Input.GetKeyDown(KeyCode.Alpha0) && !isDancing)
         {
-            //Throw some sick moves
+            //Throw some sick moves David
             StartCoroutine(dance(testDance));
 
 
         }
-        if(Input.GetKeyDown(KeyCode.Keypad8) && !isDancing)
+        if(Input.GetKeyDown(KeyCode.Alpha1) && !isDancing)
         {
-            //Do the super dance
+            //Do the super dance David
             Manager.instance.isSuperDance = true;
             StartCoroutine(dance(superDance));
 
         }
+        if(Input.GetKeyDown(KeyCode.Alpha2)&& !isDancing)
+        {
+            //Marvin1
+            Manager.instance.isSuperDance = true;
+            StartCoroutine(dance(MarvinsSaftigerMayoLastigerAntioxWaterMove));
 
-        if (Input.GetKeyDown(KeyCode.Keypad7) && !isDancing)
+        }
+        if(Input.GetKeyDown(KeyCode.Alpha3)&& !isDancing)
+        {
+            //Marvin2
+            StartCoroutine(dance(MarvinsDance));
+
+        }        
+
+        if (Input.GetKeyDown(KeyCode.Alpha4) && !isDancing)
         {
             //Do the zigzag dance
             StartCoroutine(dance(zigzag));
 
         }
 
-        if (Input.GetKeyDown(KeyCode.Keypad6) && !isDancing)
+        if (Input.GetKeyDown(KeyCode.Alpha5) && !isDancing)
         {
             //Do the zigzag dance
             Spin();
 
         }
+        if (Input.GetKeyDown(KeyCode.Alpha6) && !isDancing)
+        {
+            //Throw some sick moves
+            StartCoroutine(dance(dance0));
+
+
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha7) && !isDancing)
+        {
+            //Throw some sick moves
+            StartCoroutine(dance(dance1));
+
+
+        }
+
+
 
 
     }

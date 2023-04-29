@@ -2122,8 +2122,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1428096369}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0337, y: -0.0506, z: 10}
-  m_LocalScale: {x: 1.4916306, y: 1.5150111, z: 1}
+  m_LocalPosition: {x: 0.0546, y: 0.0377, z: 10}
+  m_LocalScale: {x: 1.7030425, y: 1.4823431, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 519420032}
@@ -2429,6 +2429,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 907a6a6415ab3a246a995fdec5f2a7e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSpinning: 0
 --- !u!212 &1674066012
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3046,8 +3047,12 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5e55ad2b44367f648bc0fc3a5a1962c7, type: 3}
   cam: {fileID: 519420031}
   projectileSprite: {fileID: 1411440168, guid: 58a75a626e0995d42aebc25824a4948e, type: 3}
-  laserSound: {fileID: 8300000, guid: 0f117089d5722314db29c84a028a3efb, type: 3}
+  laserSound:
+  - {fileID: 8300000, guid: 0f117089d5722314db29c84a028a3efb, type: 3}
+  - {fileID: 8300000, guid: a510652284e36f8469cb90141247a8b3, type: 3}
+  - {fileID: 8300000, guid: 6a67149f86fe0244fa5f3c5af9c4eeba, type: 3}
   playerObject: {fileID: 1674066010}
+  chicken: {fileID: 3901573712159457092, guid: ba5bf727778d0fc4184a1fffd7f82e11, type: 3}
 --- !u!4 &2004885459
 Transform:
   m_ObjectHideFlags: 0
