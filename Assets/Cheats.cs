@@ -1,4 +1,3 @@
-using Mono.Cecil;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -82,7 +81,7 @@ public class Cheats : MonoBehaviour
     [SerializeField] Sprite[] explosionsArr;
     [SerializeField] Camera cam;
     [SerializeField] Sprite projectileSprite;
-    [SerializeField] AudioClip laserSound;
+    [SerializeField] AudioClip[] laserSound;
     [SerializeField] GameObject playerObject;
     [SerializeField] GameObject chicken;
 
@@ -218,9 +217,8 @@ public class Cheats : MonoBehaviour
 
     public int sahne(bool isActive)
     {
+        Manager.instance.displayMessage("Bosshafte Weihnachten!");
         StartCoroutine(SahneCheatcode());
-     
-
         return 1;
 
     }
@@ -297,7 +295,9 @@ public class Cheats : MonoBehaviour
             SpriteRenderer projectileSr = projectile.AddComponent<SpriteRenderer>();
             projectileSr.sortingOrder = 100;
             AudioSource projectileAudio = projectile.AddComponent<AudioSource>();
-            projectileAudio.clip = laserSound;
+
+            rand = Random.Range(0, laserSound.Length);
+            projectileAudio.clip = laserSound[rand];
             projectileAudio.Play();
 
 
