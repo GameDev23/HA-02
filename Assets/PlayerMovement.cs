@@ -80,6 +80,8 @@ public class PlayerMovement : MonoBehaviour
     DanceMove dance1;
     DanceMove testDance;
     DanceMove superDance;
+    DanceMove MarvinsDance;
+    DanceMove MarvinsSaftigerMayoLastigerAntioxWaterMove;
 
 
 
@@ -110,6 +112,17 @@ public class PlayerMovement : MonoBehaviour
             new float[] { 4f, 4f, 1f, 1f }
             );
 
+        MarvinsDance = new DanceMove(
+            new string[] {"left", "left", "right", "right","up", "up", "down", "down" },
+            2.0f,
+            5.0f
+            );
+
+        MarvinsSaftigerMayoLastigerAntioxWaterMove = new DanceMove(new string[] { "rotl rotl ", "up down up up down ", "rotr rotl up down up up up up ", "down down rotl rotr down down down up down rotl rotl" },
+            new float[] { 3f, 3f, 3f, 3f },
+            new float[] { 2f, 2f, 3f, 2.8f }
+            );
+
     }
 
     // Update is called once per frame
@@ -135,6 +148,17 @@ public class PlayerMovement : MonoBehaviour
             StartCoroutine(dance(superDance));
 
         }
+        if(Input.GetKeyDown(KeyCode.L)&& !isDancing)
+        {
+            Manager.instance.isSuperDance = true;
+            StartCoroutine(dance(MarvinsSaftigerMayoLastigerAntioxWaterMove));
+
+        }
+        if(Input.GetKeyDown(KeyCode.K)&& !isDancing)
+        {
+            StartCoroutine(dance(MarvinsDance));
+
+        }        
 
         
     }

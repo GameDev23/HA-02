@@ -1,3 +1,4 @@
+using System.Threading;
 using Mono.Cecil;
 using System.Collections;
 using System.Collections.Generic;
@@ -81,12 +82,15 @@ public class Cheats : MonoBehaviour
     [SerializeField] SpriteRenderer player;
     [SerializeField] Sprite[] explosionsArr;
     [SerializeField] Camera cam;
+    [SerializeField] GameObject chicken;
 
     List<Cheat> cheats;
     Cheat cheat0;
     Cheat cheat1;
     Cheat cheat2;
     Cheat cheat3;
+    Cheat cheat7;
+
 
     private void Awake()
     {
@@ -102,6 +106,7 @@ public class Cheats : MonoBehaviour
         cheat1 = new Cheat("doge", dogeCheat);
         cheat2 = new Cheat("squidgame", squidGameCheat);
         cheat3 = new Cheat("boom", explosionCheat);
+        cheat7 = new Cheat("sahne",sahne);
      
 
 
@@ -109,6 +114,7 @@ public class Cheats : MonoBehaviour
         cheats.Add(cheat1);
         cheats.Add(cheat2);
         cheats.Add(cheat3);
+        cheats.Add(cheat7);
         //done with cheats initialization
     }
 
@@ -190,6 +196,16 @@ public class Cheats : MonoBehaviour
         }
     }
 
+
+    public int sahne(bool isActive)
+    {
+        StartCoroutine(SahneCheatcode());
+     
+
+        return 1;
+
+    }
+
     public int explosionCheat(bool isActive)
     {
         Manager.instance.displayMessage("BOOOM");
@@ -211,5 +227,32 @@ public class Cheats : MonoBehaviour
             yield return new WaitForSeconds(0.45f);
         }
     }
+
+
+    IEnumerator SahneCheatcode()
+    {
+        List<GameObject> ChickenBucket = new List<GameObject>();
+
+        for(int i = 0 ; i < 200;i++)
+        {
+            float x = Random.Range(0.0f, 1.0f);
+            float y = Random.Range(0.8f, 1.0f);  
+            Vector2 pos = cam.ViewportToWorldPoint(new Vector2(x, y));
+            GameObject chickenInstance = Instantiate(chicken.gameObject,  pos, Quaternion.identity);
+            chickenInstance.transform.position = pos;
+            chickenInstance.transform.rotation = UnityEngine.Random.rotation;
+            ChickenBucket.Add(chickenInstance);
+
+            yield return new WaitForSeconds(0.02f);
+        }
+
+        yield return new WaitForSeconds(3f);
+        foreach(GameObject Elem in ChickenBucket)
+        {
+            Destroy(Elem);
+        }
+
+    }
+
 
 }
