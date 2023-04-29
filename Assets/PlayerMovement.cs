@@ -127,8 +127,9 @@ public class PlayerMovement : MonoBehaviour
         zoomMove = new DanceMove(new string[] {"leftrotrleftrotrleftrotr ",  "rightrotlrightrotlrightrotl"}, new float[] { 1f, 1f }, new float[] { 10f, 10f});
 
         zigzag = new DanceMove(new string[] {"leftupleftupleftupleftupleftup", "leftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdown",
-            "leftupleftupleftupleftupleftupleftupleftupleftupleftupleftup", "leftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdown",
-        "rightdownrightdownrightdownrightdownrightdown", "rightuprightuprightuprightuprightup", "rightdownrightdownrightdownrightdownrightdown", "rightuprightuprightuprightuprightuprightuprightuprightuprightuprightup"});
+            "leftupleftupleftupleftupleftupleftupleftupleftupleftupleftup", "leftdownleftdownleftdownleftdownleftdown", "rightdownrightdownrightdownrightdownrightdown",
+            "rightuprightuprightuprightuprightuprightuprightuprightuprightuprightup", "rightdownrightdownrightdownrightdownrightdownrightdownrightdownrightdownrightdownrightdown",
+            "rightuprightuprightuprightuprightup" });
 
     }
 
