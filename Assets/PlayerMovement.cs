@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -73,14 +74,27 @@ public class DanceMove
 }
 public class PlayerMovement : MonoBehaviour
 {
-
     SpriteRenderer spriteRenderer;
     bool isDancing;
     DanceMove dance0;
     DanceMove dance1;
     DanceMove testDance;
     DanceMove superDance;
+    public static PlayerMovement instance;
+    DanceMove zoomMove;
+    DanceMove zigzag;
+    public bool isSpinning;
+    float timeElapsed;
 
+
+    private void Awake()
+    {
+        //create singleton
+        if (instance == null)
+            instance = this;
+        else if (instance != this)
+            Destroy(gameObject);
+    }
 
 
     // Start is called before the first frame update
@@ -110,6 +124,12 @@ public class PlayerMovement : MonoBehaviour
             new float[] { 4f, 4f, 1f, 1f }
             );
 
+        zoomMove = new DanceMove(new string[] {"leftrotrleftrotrleftrotr ",  "rightrotlrightrotlrightrotl"}, new float[] { 1f, 1f }, new float[] { 10f, 10f});
+
+        zigzag = new DanceMove(new string[] {"leftupleftupleftupleftupleftup", "leftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdown",
+            "leftupleftupleftupleftupleftupleftupleftupleftupleftupleftup", "leftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdownleftdown",
+        "rightdownrightdownrightdownrightdownrightdown", "rightuprightuprightuprightuprightup", "rightdownrightdownrightdownrightdownrightdown", "rightuprightuprightuprightuprightuprightuprightuprightuprightuprightup"});
+
     }
 
     // Update is called once per frame
@@ -136,7 +156,21 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
-        
+        if (Input.GetKeyDown(KeyCode.Keypad7) && !isDancing)
+        {
+            //Do the zigzag dance
+            StartCoroutine(dance(zigzag));
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad6) && !isDancing)
+        {
+            //Do the zigzag dance
+            Spin();
+
+        }
+
+
     }
     IEnumerator dance(DanceMove danceMove)
     {
@@ -239,7 +273,61 @@ public class PlayerMovement : MonoBehaviour
             spriteRenderer.flipX = false;
     }
 
+    public int Spin()
+    {
 
+        //Getting the current position
+        Vector3 pos = transform.position;
+
+        //Manipulating the new position
+        StartCoroutine(spinRoutine(pos));
+        return 1;
+    }
+
+    IEnumerator spinRoutine(Vector3 pos)
+    {
+        isSpinning = true;
+        float n = 100.0f;
+        Quaternion orientation = transform.rotation;
+        Manager.instance.isSuperDance = true;
+
+        var startPosition = pos;
+
+        for (float t = 0.0f; t <= 1.0; t += 1.0f / (360.0f * 100f))
+        {
+            if (isSpinning)
+            {
+                timeElapsed += Time.deltaTime; //Time delta time is the past time from the past frame update
+                if (timeElapsed >= 20.0f)
+                {
+                    //giving the null vector as placeholder
+                    isSpinning = false;
+                    timeElapsed = 0.0f;
+                    break;
+                }
+                pos = transform.position;
+                pos.x += 1000000.0f * Mathf.Sin((float)(t * 2 * Mathf.PI * n));
+                pos.y += 1000000.0f * Mathf.Cos((float)(t * 2 * Mathf.PI * n));
+                transform.position = pos * Time.deltaTime * 0.001f;
+                transform.Rotate(Vector3.back, 150.0f * Time.deltaTime);
+                yield return null; //waits for the next frame 
+            }
+        }
+
+        transform.rotation = orientation;
+
+        while (Vector3.Distance(transform.position, startPosition) > 0.1f) {
+                transform.position = Vector3.MoveTowards(transform.position, startPosition, Time.deltaTime);
+            yield return null;
+        }
+        Manager.instance.isSuperDance = false;
+
+    }
+
+    public int Zoom() {
+        StartCoroutine(dance(zoomMove));
+        return 1;
+    }
     
 }
 

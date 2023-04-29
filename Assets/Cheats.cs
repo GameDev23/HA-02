@@ -81,12 +81,19 @@ public class Cheats : MonoBehaviour
     [SerializeField] SpriteRenderer player;
     [SerializeField] Sprite[] explosionsArr;
     [SerializeField] Camera cam;
+    [SerializeField] Sprite projectileSprite;
+    [SerializeField] AudioClip laserSound;
+    [SerializeField] GameObject playerObject;
 
-    List<Cheat> cheats;
+
+    public List<Cheat> cheats;
     Cheat cheat0;
     Cheat cheat1;
     Cheat cheat2;
     Cheat cheat3;
+    Cheat cheat4;
+    Cheat cheat5;
+    Cheat cheat6;
 
     private void Awake()
     {
@@ -102,13 +109,18 @@ public class Cheats : MonoBehaviour
         cheat1 = new Cheat("doge", dogeCheat);
         cheat2 = new Cheat("squidgame", squidGameCheat);
         cheat3 = new Cheat("boom", explosionCheat);
-     
+        cheat4 = new Cheat("pew", laserCheat);
+        cheat5 = new Cheat("exmatrikulus", superLaserCheat);
+        cheat6 = new Cheat("zoom", zoomCheat);
 
 
         cheats.Add(cheat0);
         cheats.Add(cheat1);
         cheats.Add(cheat2);
         cheats.Add(cheat3);
+        cheats.Add(cheat4);
+        cheats.Add(cheat5);
+        cheats.Add(cheat6);
         //done with cheats initialization
     }
 
@@ -118,15 +130,22 @@ public class Cheats : MonoBehaviour
     {
         if (Input.anyKeyDown)
         {
-            char currentKey = Input.inputString.ToLower().ToCharArray()[0];
-            foreach (Cheat cheat in cheats)
+            if (!(Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)))
             {
-                cheat.checkInputKey(currentKey);
+                char[] arr = Input.inputString.ToLower().ToCharArray();
+                if (arr != null && arr.Length > 0)
+                {
+                    char currentKey = arr[0];
+                    foreach (Cheat cheat in cheats)
+                    {
+                        cheat.checkInputKey(currentKey);
+                    }
+                }
             }
         }
 
-        
-        
+
+
     }
 
     public int ninjaCheat(bool isActive)
@@ -153,7 +172,7 @@ public class Cheats : MonoBehaviour
         if(isActive)
         {
             Manager.instance.displayMessage("What the dogs doin?");
-            for(int i = 0; i < Manager.instance.npcArr.Length; i++)
+            for(int i = 0; i < Manager.instance.npcArr.Count; i++)
             {
                 SpriteRenderer currentSr = Manager.instance.npcArr[i].GetComponent<SpriteRenderer>();
                 currentSr.sprite = dogeSprite;
@@ -163,7 +182,7 @@ public class Cheats : MonoBehaviour
         else
         {
             Manager.instance.displayMessage("No one will ever know what the dogs where doin");
-            for (int i = 0; i < Manager.instance.npcArr.Length; i++)
+            for (int i = 0; i < Manager.instance.npcArr.Count; i++)
             {
                 SpriteRenderer currentSr = Manager.instance.npcArr[i].GetComponent<SpriteRenderer>();
                 Sprite defaultSprite = Manager.instance.defaultNpcSprites[i];
@@ -196,6 +215,37 @@ public class Cheats : MonoBehaviour
         StartCoroutine(explosions());
         return 1;
     }
+
+    public int laserCheat(bool isActive)
+    {
+
+        StartCoroutine(laser());
+        return 1;
+    }
+
+
+    #region SuperLaserCheat
+    public int superLaserCheat(bool isActive)
+    {
+        for (int i = 0; i < Manager.instance.npcArr.Count; i++)
+        {
+            StartCoroutine(laser(i));
+        }
+        return 1;
+    }
+    #endregion
+
+
+    #region ZoomCheat
+    public int zoomCheat(bool isActive) {
+
+        PlayerMovement.instance.Zoom();
+
+        return 1;
+    }
+    #endregion
+
+
     IEnumerator explosions()
     {
         int n = 10;
@@ -210,6 +260,70 @@ public class Cheats : MonoBehaviour
             n--;
             yield return new WaitForSeconds(0.45f);
         }
+    }
+
+    IEnumerator laser(int Index = -1)
+    {
+
+        if (Manager.instance.npcArr.Count > 0)
+        {
+            int rand = Index;
+            if (Index == -1)
+                rand = Random.Range(0, Manager.instance.npcArr.Count);
+            GameObject target = Manager.instance.npcArr[rand];
+
+            // get start position
+            Vector2 currentPos = player.transform.position;
+
+            // create projectile
+
+            GameObject projectile = new GameObject("Laser");
+            SpriteRenderer projectileSr = projectile.AddComponent<SpriteRenderer>();
+            projectileSr.sortingOrder = 100;
+            AudioSource projectileAudio = projectile.AddComponent<AudioSource>();
+            projectileAudio.clip = laserSound;
+            projectileAudio.Play();
+
+
+            // set sprite
+            projectileSr.sprite = projectileSprite;
+
+            // set position
+            projectile.transform.position = currentPos;
+
+
+            // rotate projectile to face target
+            Vector2 worldPosition = target.transform.position;
+            Vector2 direction = (worldPosition - (Vector2)projectile.transform.position).normalized;
+            projectile.transform.right = direction;
+            projectile.transform.Rotate(0, 0, 90);
+
+
+            // let the sprite move to target
+            while (true)
+            {
+                Vector2 flyingDirection = Vector2.MoveTowards(projectile.transform.position, target.transform.position, 10 * Time.deltaTime);
+                projectile.transform.position = flyingDirection;
+
+                if (Vector3.Distance(projectile.transform.position, target.transform.position) < 0.1f)
+                {
+                    // if hit then let target explode
+                    Manager.instance.displayMessage(target.name + " got pew pew'd");
+                    Manager.instance.npcArr.Remove(target);
+                    AudioManager.instance.playExplosion(target.transform.position);
+                    Destroy(target);
+                    Destroy(projectile);
+                    break;
+                }
+                yield return null;
+
+            }
+
+            Debug.Log("HIT" + target.name); 
+        }
+
+
+
     }
 
 }
